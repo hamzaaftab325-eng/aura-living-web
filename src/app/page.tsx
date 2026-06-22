@@ -1,31 +1,29 @@
-'use client'
+import { Hero } from "@/features/home/components/hero";
+import { CategoryTiles } from "@/features/home/components/category-tiles";
+import { Bestsellers } from "@/features/home/components/bestsellers";
+import { EditorialBanner } from "@/features/home/components/editorial-banner";
+import { Testimonials } from "@/features/home/components/testimonials";
+import { NewsletterCTA } from "@/features/home/components/newsletter-cta";
+import { SiteHeader } from "@/features/layout/components/site-header";
+import { SiteFooter } from "@/features/layout/components/site-footer";
+import { WhatsAppFAB } from "@/features/layout/components/whatsapp-fab";
+import { CartDrawer } from "@/features/cart/components/cart-drawer";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      gap: '2rem',
-      padding: '1rem'
-    }}>
-      <div style={{
-        position: 'relative',
-        width: '6rem',
-        height: '6rem'
-      }}>
-        <img
-          src="/logo.svg"
-          alt="Z.ai Logo"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain'
-          }}
-        />
-      </div>
-    </div>
-  )
+    <>
+      <SiteHeader />
+      <main id="main-content">
+        <Hero />
+        <CategoryTiles />
+        <Bestsellers />
+        <EditorialBanner />
+        <Testimonials />
+        <NewsletterCTA />
+      </main>
+      <SiteFooter />
+      <WhatsAppFAB />
+      <CartDrawer />
+    </>
+  );
 }
