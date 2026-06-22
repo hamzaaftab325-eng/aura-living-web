@@ -63,7 +63,7 @@ const envSchema = z.object({
   OTP_DEV_MODE: z
     .string()
     .optional()
-    .default("true")
+    .default("false")
     .transform((v) => v === "true"),
 
   /* Tier 4 — Deferred full-stack */
