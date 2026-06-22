@@ -103,7 +103,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             <button
               type="button"
               onClick={handleAddToCart}
-              className="w-full bg-[#0E0E0E] text-cream text-sm font-medium py-2.5 rounded-sm flex items-center justify-center gap-2 hover:bg-[#C9A84C] hover:text-[#0E0E0E] transition-colors"
+              className="w-full bg-[#C9A84C] text-[#0E0E0E] text-sm font-semibold py-2.5 rounded-sm flex items-center justify-center gap-2 hover:bg-[#0E0E0E] hover:text-[#FAF8F2] transition-colors"
             >
               <ShoppingBag className="w-4 h-4" />
               Add to Cart

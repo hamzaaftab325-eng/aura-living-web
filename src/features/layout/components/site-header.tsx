@@ -34,7 +34,7 @@ export function SiteHeader() {
   return (
     <>
       <header
-        className="fixed top-0 inset-x-0 z-[var(--z-header)] bg-[#0E0E0E] border-b border-white/10 shadow-[0_4px_12px_-2px_rgba(10,10,10,0.08)]"
+        className="fixed top-0 inset-x-0 z-[var(--z-header)] bg-white border-b border-[#F0EBDC] shadow-[0_4px_12px_-2px_rgba(10,10,10,0.08)]"
       >
         <PromoBar />
         <div className="container-page">
@@ -43,7 +43,7 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden text-cream p-2 -ml-2"
+              className="lg:hidden text-[#0A0A0A] p-2 -ml-2"
               aria-label="Open menu"
             >
               <Menu className="w-5 h-5" />
@@ -52,7 +52,7 @@ export function SiteHeader() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 text-cream"
+              className="flex items-center gap-2 text-[#0A0A0A]"
               aria-label="Aura Living home"
             >
               <span className="font-display text-xl md:text-2xl font-semibold tracking-tight">
@@ -71,7 +71,7 @@ export function SiteHeader() {
                     href={link.href}
                     className={cn(
                       "text-sm font-medium tracking-wide transition-colors flex items-center gap-1",
-                      "text-cream/90 hover:text-[#C9A84C]",
+                      "text-[#2A2A2A] hover:text-[#C9A84C]",
                       pathname.startsWith(link.href) && "text-[#C9A84C]"
                     )}
                   >
@@ -104,14 +104,14 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={() => setSearchOpen(true)}
-                className="text-cream p-2 hover:text-[#C9A84C] transition-colors"
+                className="text-[#0A0A0A] p-2 hover:text-[#C9A84C] transition-colors"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5" />
               </button>
               <Link
                 href="/account/wishlist"
-                className="text-cream p-2 hover:text-[#C9A84C] transition-colors hidden sm:block"
+                className="text-[#0A0A0A] p-2 hover:text-[#C9A84C] transition-colors hidden sm:block"
                 aria-label="Wishlist"
               >
                 <Heart className="w-5 h-5" />
@@ -119,7 +119,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={() => useCartStore.getState().openDrawer()}
-                className="text-cream p-2 hover:text-[#C9A84C] transition-colors relative"
+                className="text-[#0A0A0A] p-2 hover:text-[#C9A84C] transition-colors relative"
                 aria-label="Open cart"
               >
                 <ShoppingBag className="w-5 h-5" />

@@ -106,7 +106,7 @@ export function BestsellerCarousel({ products }: BestsellerCarouselProps) {
                     <button
                       type="button"
                       onClick={(e) => handleAdd(e, product)}
-                      className="w-full bg-[#0E0E0E] text-cream text-sm font-medium py-2.5 rounded-sm flex items-center justify-center gap-2 hover:bg-[#C9A84C] hover:text-[#0E0E0E] transition-colors"
+                      className="w-full bg-[#C9A84C] text-[#0E0E0E] text-sm font-semibold py-2.5 rounded-sm flex items-center justify-center gap-2 hover:bg-[#0E0E0E] hover:text-[#FAF8F2] transition-colors"
                     >
                       Add to Cart
                     </button>
@@ -143,11 +143,11 @@ export function BestsellerCarousel({ products }: BestsellerCarouselProps) {
         {/* End card — view all */}
         <Link
           href="/shop"
-          className="group flex flex-col items-center justify-center w-[200px] md:w-[240px] flex-shrink-0 snap-start bg-[#0E0E0E] rounded-sm text-cream p-8 text-center"
+          className="group flex flex-col items-center justify-center w-[200px] md:w-[240px] flex-shrink-0 bg-white border border-[#F0EBDC] rounded-sm text-[#0A0A0A] p-8 text-center hover:border-[#C9A84C] transition-colors"
         >
           <span className="text-h3 font-display mb-3">View All</span>
-          <p className="text-caption text-cream/60 mb-4">48 curated pieces</p>
-          <span className="inline-flex items-center gap-2 text-sm font-medium text-[#C9A84C] group-hover:gap-3 transition-all">
+          <p className="text-caption text-[#5A5A5A] mb-4">48 curated pieces</p>
+          <span className="inline-flex items-center gap-2 text-sm font-medium text-[#8A6B26] group-hover:gap-3 transition-all">
             Shop all <ArrowRight className="w-4 h-4" />
           </span>
         </Link>
