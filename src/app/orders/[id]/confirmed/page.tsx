@@ -8,7 +8,7 @@ export default function OrderConfirmedPage({ params }: { params: Promise<{ id: s
   return (
     <>
       <SiteHeader />
-      <main id="main-content" className="pt-20">
+      <main id="main-content" className="pt-24 md:pt-28">
         <OrderConfirmation orderId={"placeholder"} />
       </main>
       <SiteFooter />

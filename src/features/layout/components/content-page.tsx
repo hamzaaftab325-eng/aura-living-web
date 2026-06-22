@@ -24,7 +24,7 @@ export function ContentPage({
   return (
     <>
       <SiteHeader />
-      <main id="main-content" className="pt-16 md:pt-20">
+      <main id="main-content" className="pt-24 md:pt-28">
         <PageHeader
           overline={overline}
           title={title}

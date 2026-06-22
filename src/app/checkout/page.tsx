@@ -15,7 +15,7 @@ export default function CheckoutRoute() {
   return (
     <>
       <SiteHeader />
-      <main id="main-content" className="pt-20">
+      <main id="main-content" className="pt-24 md:pt-28">
         <CheckoutForm />
       </main>
       <SiteFooter />

@@ -12,10 +12,10 @@ import { Menu, Search, ShoppingBag, Heart, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NAV_LINKS, CATEGORIES } from "@/lib/constants";
 import { useCartStore } from "@/features/cart/store";
+import { PromoBar } from "@/features/layout/components/promo-bar";
 import { Button } from "@/components/ui/button";
 
 export function SiteHeader() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -24,10 +24,6 @@ export function SiteHeader() {
 
   useEffect(() => {
     setMounted(true);
-    const onScroll = () => setScrolled(window.scrollY > 100);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -35,18 +31,12 @@ export function SiteHeader() {
     setSearchOpen(false);
   }, [pathname]);
 
-  const isTransparent = !scrolled && pathname === "/";
-
   return (
     <>
       <header
-        className={cn(
-          "fixed top-0 inset-x-0 z-[var(--z-header)] transition-all duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
-          isTransparent
-            ? "bg-transparent"
-            : "bg-[#0E0E0E] border-b border-white/10 shadow-[0_4px_12px_-2px_rgba(10,10,10,0.08)]"
-        )}
+        className="fixed top-0 inset-x-0 z-[var(--z-header)] bg-[#0E0E0E] border-b border-white/10 shadow-[0_4px_12px_-2px_rgba(10,10,10,0.08)]"
       >
+        <PromoBar />
         <div className="container-page">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Mobile menu button */}
@@ -81,9 +71,7 @@ export function SiteHeader() {
                     href={link.href}
                     className={cn(
                       "text-sm font-medium tracking-wide transition-colors flex items-center gap-1",
-                      isTransparent
-                        ? "text-cream/90 hover:text-[#C9A84C]"
-                        : "text-cream/90 hover:text-[#C9A84C]",
+                      "text-cream/90 hover:text-[#C9A84C]",
                       pathname.startsWith(link.href) && "text-[#C9A84C]"
                     )}
                   >

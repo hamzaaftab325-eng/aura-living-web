@@ -15,7 +15,7 @@ export default function GlobalError({
   return (
     <>
       <SiteHeader />
-      <main id="main-content" className="min-h-[70vh] flex items-center justify-center pt-20">
+      <main id="main-content" className="min-h-[70vh] flex items-center justify-center pt-24 md:pt-28">
         <div className="container-narrow text-center">
           <p className="text-overline text-gold mb-3">Something went wrong</p>
           <h1 className="text-h1 mb-4 text-balance">A flicker in the light.</h1>

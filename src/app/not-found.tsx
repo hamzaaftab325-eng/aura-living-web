@@ -9,7 +9,7 @@ export default function NotFound() {
   return (
     <>
       <SiteHeader />
-      <main id="main-content" className="min-h-[70vh] flex items-center justify-center pt-20">
+      <main id="main-content" className="min-h-[70vh] flex items-center justify-center pt-24 md:pt-28">
         <div className="container-narrow text-center">
           <p className="text-display font-display text-[#C9A84C]/30 mb-4">404</p>
           <p className="text-overline text-gold mb-3">Lost in the dark</p>

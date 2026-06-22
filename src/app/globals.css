@@ -488,6 +488,15 @@
     text-wrap: pretty;
   }
 
+  /* Hide scrollbar for horizontal carousels */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   /* Gold gradient text */
   .text-gradient-gold {
     background: linear-gradient(135deg, #F5E6B8 0%, #C9A84C 50%, #B08D3A 100%);
