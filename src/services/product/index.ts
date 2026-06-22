@@ -111,5 +111,5 @@ export const productService = {
 };
 
 async function delay(ms = 250): Promise<void> {
-  if (env.isDev) await new Promise((r) => setTimeout(r, ms));
+  if (process.env.NODE_ENV === "development") await new Promise((r) => setTimeout(r, ms));
 }

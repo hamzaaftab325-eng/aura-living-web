@@ -177,7 +177,14 @@ export const SHIPPING_METHODS = [
 
 export const FREE_SHIPPING_THRESHOLD = 5000;
 
-export const PAYMENT_METHODS = [
+export const PAYMENT_METHODS: {
+  id: string;
+  name: string;
+  shortName: string;
+  description: string;
+  icon: string;
+  default?: boolean;
+}[] = [
   {
     id: "cod",
     name: "Cash on Delivery",
@@ -214,7 +221,7 @@ export const PAYMENT_METHODS = [
     description: "Transfer to our HBL account. Order ships after confirmation.",
     icon: "building-2",
   },
-] as const;
+];
 
 export const WHATSAPP_CONFIG = {
   number: env.NEXT_PUBLIC_WHATSAPP_NUMBER,

@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   output: "standalone",
   reactStrictMode: false,
   typescript: {
+    // Pre-existing errors in examples/ and skills/ are excluded via tsconfig.
+    // Aura Living source (src/) is fully type-checked and error-free.
     ignoreBuildErrors: false,
   },
   images: {
