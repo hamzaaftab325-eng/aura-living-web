@@ -2,12 +2,16 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import type { Product } from "@/services/product/types";
 import { formatPKR, formatDiscount } from "@/lib/format";
 import { useCartStore } from "@/features/cart/store";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 interface BestsellerCarouselProps {
   products: Product[];
@@ -16,6 +20,7 @@ interface BestsellerCarouselProps {
 export function BestsellerCarousel({ products }: BestsellerCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const addItem = useCartStore((s) => s.addItem);
+  const reduced = useReducedMotion();
 
   const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -43,7 +48,13 @@ export function BestsellerCarousel({ products }: BestsellerCarouselProps) {
   return (
     <section className="surface-cream section-y" aria-label="Bestselling products">
       <div className="container-page">
-        <div className="flex items-end justify-between mb-8 md:mb-10">
+        <motion.div
+          className="flex items-end justify-between mb-8 md:mb-10"
+          initial={reduced ? undefined : { opacity: 0, y: 24 }}
+          whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.8, ease: EASE }}
+        >
           <div className="max-w-xl">
             <p className="text-overline text-gold mb-3">Most Loved</p>
             <h2 className="text-h2 text-balance">The pieces our customers keep coming back for.</h2>
@@ -66,7 +77,7 @@ export function BestsellerCarousel({ products }: BestsellerCarouselProps) {
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Horizontal scroll row */}
@@ -75,69 +86,77 @@ export function BestsellerCarousel({ products }: BestsellerCarouselProps) {
         className="flex gap-5 overflow-x-auto scrollbar-hide px-4 md:px-[max(1rem,calc((100vw-90rem)/2))] pb-4 snap-x"
         style={{ scrollbarWidth: "none" }}
       >
-        {products.map((product) => {
+        {products.map((product, idx) => {
           const discount = formatDiscount(product.price, product.compareAtPrice);
           const isOutOfStock = product.inventory.status === "out-of-stock";
           return (
-            <Link
+            <motion.div
               key={product.slug}
-              href={`/product/${product.slug}`}
-              className="group block w-[260px] md:w-[280px] flex-shrink-0 snap-start"
+              initial={reduced ? undefined : { opacity: 0, y: 30 }}
+              whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, ease: EASE, delay: (idx % 4) * 0.08 }}
             >
-              <div className="relative aspect-[4/5] bg-[#F0EBDC] rounded-sm overflow-hidden mb-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={product.cardImage.url}
-                  alt={product.cardImage.alt}
-                  width={product.cardImage.width}
-                  height={product.cardImage.height}
-                  className={cn(
-                    "w-full h-full object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105",
-                    isOutOfStock && "opacity-60 grayscale"
+              <Link
+                href={`/product/${product.slug}`}
+                className="group block w-[260px] md:w-[280px] flex-shrink-0 snap-start"
+              >
+                <div className="relative aspect-[4/5] bg-[#F0EBDC] rounded-sm overflow-hidden mb-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={product.cardImage.url}
+                    alt={product.cardImage.alt}
+                    width={product.cardImage.width}
+                    height={product.cardImage.height}
+                    loading={idx < 4 ? "eager" : "lazy"}
+                    className={cn(
+                      "w-full h-full object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105",
+                      isOutOfStock && "opacity-60 grayscale"
+                    )}
+                  />
+                  {discount && (
+                    <span className="absolute top-3 left-3 bg-[#C9A84C] text-[#0A0A0A] text-caption font-bold px-2 py-1 rounded-sm">
+                      -{discount}%
+                    </span>
                   )}
-                />
-                {discount && (
-                  <span className="absolute top-3 left-3 bg-[#C9A84C] text-[#0E0E0E] text-caption font-bold px-2 py-1 rounded-sm">
-                    -{discount}%
-                  </span>
-                )}
-                {!isOutOfStock && (
-                  <div className="absolute bottom-0 inset-x-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)]">
-                    <button
-                      type="button"
-                      onClick={(e) => handleAdd(e, product)}
-                      className="w-full bg-[#C9A84C] text-[#0E0E0E] text-sm font-semibold py-2.5 rounded-sm flex items-center justify-center gap-2 hover:bg-[#0E0E0E] hover:text-[#FAF8F2] transition-colors"
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className="space-y-1">
-                <p className="text-caption text-[#8A8275] capitalize">{product.metadata.origin || product.category}</p>
-                <h3 className="text-sm md:text-base font-display font-medium text-[#0A0A0A] group-hover:text-[#8A6B26] transition-colors line-clamp-2">
-                  {product.name}
-                </h3>
-                {product.rating && (
-                  <div className="flex items-center gap-1">
-                    <Star className="w-3 h-3 fill-[#C9A84C] text-[#C9A84C]" />
-                    <span className="text-caption text-[#5A5A5A]">
-                      {product.rating.average.toFixed(1)} ({product.rating.count})
-                    </span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2 pt-1">
-                  <span className="text-sm md:text-base font-semibold text-[#0A0A0A]">
-                    {formatPKR(product.price)}
-                  </span>
-                  {product.compareAtPrice && (
-                    <span className="text-body-sm text-[#8A8275] line-through">
-                      {formatPKR(product.compareAtPrice)}
-                    </span>
+                  {!isOutOfStock && (
+                    <div className="absolute bottom-0 inset-x-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)]">
+                      <button
+                        type="button"
+                        onClick={(e) => handleAdd(e, product)}
+                        className="w-full bg-[#C9A84C] text-[#0A0A0A] text-sm font-semibold py-2.5 rounded-sm flex items-center justify-center gap-2 hover:bg-[#0A0A0A] hover:text-[#FAF8F2] transition-colors"
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
                   )}
                 </div>
-              </div>
-            </Link>
+                <div className="space-y-1">
+                  <p className="text-caption text-[#8A8275] capitalize">{product.metadata.origin || product.category}</p>
+                  <h3 className="text-sm md:text-base font-display font-medium text-[#0A0A0A] group-hover:text-[#8A6B26] transition-colors line-clamp-2">
+                    {product.name}
+                  </h3>
+                  {product.rating && (
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-[#C9A84C] text-[#C9A84C]" />
+                      <span className="text-caption text-[#5A5A5A]">
+                        {product.rating.average.toFixed(1)} ({product.rating.count})
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-sm md:text-base font-semibold text-[#0A0A0A]">
+                      {formatPKR(product.price)}
+                    </span>
+                    {product.compareAtPrice && (
+                      <span className="text-body-sm text-[#8A8275] line-through">
+                        {formatPKR(product.compareAtPrice)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
           );
         })}
         {/* End card — view all */}

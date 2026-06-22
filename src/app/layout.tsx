@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { SmoothScrollProvider } from "@/components/motion/smooth-scroll-provider";
 import { cn } from "@/lib/utils";
 
 /* ----------------------------------------------------------------------------
@@ -203,7 +204,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
-        {children}
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
         <Toaster />
       </body>
     </html>

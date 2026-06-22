@@ -1,3 +1,5 @@
+import { Reveal } from "@/components/motion/reveal";
+
 const FEATURES = [
   "Dawn",
   "MAG Weekly",
@@ -11,7 +13,7 @@ export function AsFeaturedIn() {
   return (
     <section className="bg-[#FAF8F2] border-y border-[#F0EBDC]" aria-label="As featured in">
       <div className="container-page py-6 md:py-8">
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+        <Reveal className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
           <p className="text-overline text-[#5A5A5A] whitespace-nowrap flex-shrink-0">
             As Featured In
           </p>
@@ -25,7 +27,7 @@ export function AsFeaturedIn() {
               </span>
             ))}
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

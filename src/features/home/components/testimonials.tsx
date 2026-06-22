@@ -1,4 +1,11 @@
+"use client";
+
 import { Star, Quote } from "lucide-react";
+import { motion } from "framer-motion";
+import { Marquee } from "@/components/motion/marquee";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 const TESTIMONIALS = [
   {
@@ -51,11 +58,46 @@ const TESTIMONIALS = [
   },
 ];
 
+function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
+  return (
+    <article className="bg-white border border-[#F0EBDC] rounded-sm p-6 md:p-8 flex flex-col w-[340px] md:w-[400px] flex-shrink-0 mx-2">
+      <Quote className="w-8 h-8 text-[#C9A84C]/40 mb-4" />
+      <blockquote className="text-body-sm text-[#2A2A2A] leading-relaxed flex-1 text-pretty">
+        {t.quote}
+      </blockquote>
+      <div className="mt-6 pt-6 border-t border-[#F0EBDC]">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-[#0A0A0A]">{t.name}</p>
+            <p className="text-caption text-[#5A5A5A]">{t.city}</p>
+          </div>
+          <div className="flex">
+            {Array.from({ length: t.rating }).map((_, i) => (
+              <Star key={i} className="w-3 h-3 fill-[#C9A84C] text-[#C9A84C]" />
+            ))}
+          </div>
+        </div>
+        <p className="text-caption text-[#8A8275] mt-2">
+          Verified purchase · {t.product}
+        </p>
+      </div>
+    </article>
+  );
+}
+
 export function Testimonials() {
+  const reduced = useReducedMotion();
+
   return (
     <section className="surface-cream section-y border-t border-[#F0EBDC]" aria-label="Customer testimonials">
       <div className="container-page">
-        <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+        <motion.div
+          className="text-center max-w-2xl mx-auto mb-12 md:mb-16"
+          initial={reduced ? undefined : { opacity: 0, y: 24 }}
+          whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.8, ease: EASE }}
+        >
           <p className="text-overline text-gold mb-3">From Our Customers</p>
           <h2 className="text-h2 text-balance">
             Homes made warmer, one piece at a time.
@@ -70,38 +112,15 @@ export function Testimonials() {
               4.8 average · 2,400+ reviews
             </span>
           </div>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {TESTIMONIALS.map((t, idx) => (
-            <article
-              key={idx}
-              className="bg-white border border-[#F0EBDC] rounded-sm p-6 md:p-8 flex flex-col"
-            >
-              <Quote className="w-8 h-8 text-[#C9A84C]/40 mb-4" />
-              <blockquote className="text-body-sm text-[#2A2A2A] leading-relaxed flex-1 text-pretty">
-                {t.quote}
-              </blockquote>
-              <div className="mt-6 pt-6 border-t border-[#F0EBDC]">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-[#0A0A0A]">{t.name}</p>
-                    <p className="text-caption text-[#5A5A5A]">{t.city}</p>
-                  </div>
-                  <div className="flex">
-                    {Array.from({ length: t.rating }).map((_, i) => (
-                      <Star key={i} className="w-3 h-3 fill-[#C9A84C] text-[#C9A84C]" />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-caption text-[#8A8275] mt-2">
-                  Verified purchase · {t.product}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
+        </motion.div>
       </div>
+
+      {/* Marquee on desktop, horizontal scroll on mobile */}
+      <Marquee speed={50} className="py-4">
+        {TESTIMONIALS.map((t, idx) => (
+          <TestimonialCard key={idx} t={t} />
+        ))}
+      </Marquee>
     </section>
   );
 }

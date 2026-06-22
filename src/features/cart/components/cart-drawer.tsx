@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 import { X, Plus, Minus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCartStore } from "@/features/cart/store";
 import { formatPKR } from "@/lib/format";
-import { Button } from "@/components/ui/button";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function CartDrawer() {
   const [mounted, setMounted] = useState(false);
@@ -17,6 +20,7 @@ export function CartDrawer() {
     removeItem,
     subtotal,
   } = useCartStore();
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     // Rehydrate on mount (skipHydration pattern)
@@ -35,22 +39,32 @@ export function CartDrawer() {
     };
   }, [drawerOpen]);
 
-  if (!mounted || !drawerOpen) return null;
+  if (!mounted) return null;
 
   const sub = subtotal();
 
   return (
-    <div className="fixed inset-0 z-[var(--z-drawer)]">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={closeDrawer}
-        aria-hidden="true"
-      />
-      <div
-        className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-[#FAF8F2] shadow-2xl flex flex-col"
-        role="dialog"
-        aria-label="Shopping cart"
-      >
+    <AnimatePresence>
+      {drawerOpen && (
+        <div className="fixed inset-0 z-[var(--z-drawer)]">
+          <motion.div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            initial={reduced ? undefined : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduced ? undefined : { opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={closeDrawer}
+            aria-hidden="true"
+          />
+          <motion.div
+            className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-[#FAF8F2] shadow-2xl flex flex-col"
+            role="dialog"
+            aria-label="Shopping cart"
+            initial={reduced ? undefined : { x: "100%" }}
+            animate={{ x: 0 }}
+            exit={reduced ? undefined : { x: "100%" }}
+            transition={{ duration: 0.4, ease: EASE }}
+          >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-[#F0EBDC]">
           <div className="flex items-center gap-2">
@@ -190,7 +204,9 @@ export function CartDrawer() {
             </div>
           </>
         )}
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }
