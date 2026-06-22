@@ -1,0 +1,802 @@
+     1→  1301→These principles are not aspirational. They are enforced by an
+     2→  1302→ESLint plugin (eslint-plugin-import with import-boundaries
+     3→  1303→rules) that fails the build on violation. A developer who tries to
+     4→  1304→import from features/cart/store.ts directly from app/page.tsx
+     5→  1305→will see a lint error before they can commit.
+     6→  1306→5. Design System
+     7→  1307→The Aura Living design system is the single source of truth for
+     8→  1308→every visual decision in the application. It is encoded as CSS
+     9→  1309→custom properties (design tokens) in globals.css, surfaced as
+    10→  1310→Tailwind theme extensions in tailwind.config.ts, and consumed
+    11→  1311→exclusively via Tailwind utility classes in components. There are
+    12→  1312→no inline styles anywhere in the codebase. There are no magic
+    13→  1313→numbers in components. Every colour, every spacing value, every
+    14→  1314→radius, every shadow, every animation duration is a token, and
+    15→  1315→every token has a name, a value, and a documented purpose. This
+    16→  1316→discipline is what allows a designer and a developer to collaborate
+    17→  1317→without friction and what allows the brand to evolve without
+    18→  1318→cascading refactors.
+    19→  1319→5.1 Color Token System
+    20→  1320→
+    21→  1321→===== PAGE 34 =====
+    22→  1322→
+    23→  1323→Aura Living uses a four-tier colour token system inspired by the
+    24→  1324→2026 Tailwind 4 design-token conventions. The four tiers are:
+    25→  1325→primitive (the raw colour value, e.g., a specific hex), semantic (the
+    26→  1326→role the colour plays, e.g., "background" or "foreground"),
+    27→  1327→component (the colour as applied to a specific component, e.g.,
+    28→  1328→"button-primary-background"), and state (variations for hover,
+    29→  1329→focus, active, disabled). Primitive tokens are never used directly in
+    30→  1330→components; they are composed into semantic tokens, which are
+    31→  1331→composed into component tokens. This indirection means that
+    32→  1332→changing the brand gold from #C9A84C to a slightly warmer
+    33→  1333→shade requires editing one primitive token, not hunting through
+    34→  1334→every component.
+    35→  1335→The colour system is anchored by three primary families: gold (the
+    36→  1336→brand accent, in five shades), black (the ink and dark-section
+    37→  1337→background, in four shades), and white (the light-section
+    38→  1338→background, in two warm shades). Two supporting families —
+    39→  1339→warm gray (for muted text and borders) and signal colours
+    40→  1340→(success green, warning amber, error red, used sparingly for
+    41→  1341→system feedback) — complete the palette. Every colour in the
+    42→  1342→system meets WCAG 2.2 AA contrast against at least one other
+    43→  1343→colour in the system, and the gold-on-black combination meets
+    44→  1344→AAA contrast (7.4:1), making it safe for body text in dark sections.
+    45→  1345→5.2 Gold and Black Palette Specification
+    46→  1346→The table below specifies every colour token in the Aura Living
+    47→  1347→system. The hex values are the source of truth; the HSL
+    48→  1348→equivalents are provided for convenience when adjusting opacity.
+    49→  1349→The role column describes the intended use; the contrast column
+    50→  1350→lists the minimum contrast ratio against the token's intended
+    51→  1351→pairing colour.
+    52→  1352→Token Name Hex Role Contrast
+    53→  1353→Lightest gold
+    54→  1354→— subtle
+    55→  1355→1.4:1 on
+    56→  1356→color.gold.100 #F5E6B8 highlights,
+    57→  1357→black
+    58→  1358→hover bg on
+    59→  1359→dark
+    60→  1360→Light gold —
+    61→  1361→decorative 9.2:1 on
+    62→  1362→color.gold.300 #E8C766
+    63→  1363→elements on black
+    64→  1364→dark sections
+    65→  1365→Primary
+    66→  1366→brand gold —
+    67→  1367→7.4:1 on
+    68→  1368→color.gold.500 #C9A84C accent, links,
+    69→  1369→black (AAA)
+    70→  1370→key UI on
+    71→  1371→dark
+    72→  1372→Deep gold —
+    73→  1373→5.8:1 on
+    74→  1374→color.gold.600 #B08D3A hover/active
+    75→  1375→black (AA)
+    76→  1376→states for
+    77→  1377→
+    78→  1378→===== PAGE 35 =====
+    79→  1379→
+    80→  1380→Token Name Hex Role Contrast
+    81→  1381→gold
+    82→  1382→elements
+    83→  1383→Darkest gold
+    84→  1384→— gold text 4.9:1 on
+    85→  1385→color.gold.700 #8A6B26
+    86→  1386→on LIGHT white (AA)
+    87→  1387→backgrounds
+    88→  1388→Pure white —
+    89→  1389→21:1 on
+    90→  1390→color.black.0 #FFFFFF primary light
+    91→  1391→black.900
+    92→  1392→background
+    93→  1393→Warm cream
+    94→  1394→— secondary
+    95→  1395→19.8:1 on
+    96→  1396→color.black.50 #FAF8F2 surface,
+    97→  1397→black.900
+    98→  1398→cards, table
+    99→  1399→rows
+   100→  1400→Mid warm —
+   101→  1401→borders, 15.2:1 on
+   102→  1402→color.black.100 #F0EBDC
+   103→  1403→dividers on black.900
+   104→  1404→light sections
+   105→  1405→Soft black —
+   106→  1406→14.1:1 on
+   107→  1407→color.black.700 #2A2A2A body text on
+   108→  1408→white
+   109→  1409→dark sections
+   110→  1410→Deepest
+   111→  1411→black —
+   112→  1412→21:1 on
+   113→  1413→color.black.900 #0A0A0A headings,
+   114→  1414→white
+   115→  1415→primary text
+   116→  1416→on light
+   117→  1417→Rich black —
+   118→  1418→20.5:1 on
+   119→  1419→color.black.950 #0E0E0E dark section
+   120→  1420→white
+   121→  1421→backgrounds
+   122→  1422→Muted gray
+   123→  1423→— captions, 4.6:1 on
+   124→  1424→color.gray.400 #8A8275
+   125→  1425→footers on black.950
+   126→  1426→dark
+   127→  1427→Mid gray —
+   128→  1428→captions, 7.4:1 on
+   129→  1429→color.gray.600 #5A5A5A
+   130→  1430→muted text white
+   131→  1431→on light
+   132→  1432→Success —
+   133→  1433→order placed, 4.6:1 on
+   134→  1434→color.signal.success #2E7D5B
+   135→  1435→payment white
+   136→  1436→confirmed
+   137→  1437→Warning —
+   138→  1438→low stock, 4.8:1 on
+   139→  1439→color.signal.warning #B8860B
+   140→  1440→address white
+   141→  1441→verification
+   142→  1442→color.signal.error #B23A3A
+   143→  1443→
+   144→  1444→===== PAGE 36 =====
+   145→  1445→
+   146→  1446→Token Name Hex Role Contrast
+   147→  1447→Error — out
+   148→  1448→of stock, 5.2:1 on
+   149→  1449→payment white
+   150→  1450→failed
+   151→  1451→Table 5.1 — Complete Aura Living colour token specification
+   152→  1452→5.3 Typography System
+   153→  1453→Aura Living uses two typeface families: Fraunces (a variable serif)
+   154→  1454→for display and headings, and Inter (a variable sans-serif) for body,
+   155→  1455→UI, and microcopy. Both are loaded via next/font/google with the
+   156→  1456→variable axis enabled, which gives access to the full weight range
+   157→  1457→without shipping multiple font files. The choice of Fraunces is
+   158→  1458→deliberate: it is a contemporary serif with optical sizing (the
+   159→  1459→letterforms adjust based on size, becoming more refined at display
+   160→  1460→sizes), a soft warmth that complements the gold palette, and a
+   161→  1461→personality that distinguishes Aura Living from generic sans-only
+   162→  1462→e-commerce sites. Inter is chosen as the body face because it was
+   163→  1463→designed for screen readability at small sizes, has exceptional
+   164→  1464→legibility, and is neutral enough to let Fraunces carry the brand
+   165→  1465→voice.
+   166→  1466→5.3.1 Type Scale
+   167→  1467→The type scale is based on a 1.250 (major third) modular ratio,
+   168→  1468→with each step 1.25 times the previous. The scale is fluid: every
+   169→  1469→size uses CSS clamp() to scale smoothly between a mobile
+   170→  1470→minimum and a desktop maximum, eliminating the need for
+   171→  1471→breakpoint-based font-size changes and preventing the layout shift
+   172→  1472→that comes from abrupt font swaps. The table below lists the
+   173→  1473→named type tokens, their mobile and desktop sizes, the line-
+   174→  1474→height, and the intended use.
+   175→  1475→Mobile / Line
+   176→  1476→Token Use
+   177→  1477→Desktop Height
+   178→  1478→Homepage
+   179→  1479→clamp(2.5rem, hero,
+   180→  1480→text.display 1.05
+   181→  1481→5vw, 4.5rem) editorial
+   182→  1482→banners
+   183→  1483→Page titles
+   184→  1484→clamp(2rem, 4vw,
+   185→  1485→text.h1 1.1 (Product,
+   186→  1486→3rem)
+   187→  1487→Cart, About)
+   188→  1488→clamp(1.5rem, Section
+   189→  1489→text.h2 1.2
+   190→  1490→3vw, 2.25rem) headings
+   191→  1491→Subsection
+   192→  1492→clamp(1.25rem, headings,
+   193→  1493→text.h3 1.3
+   194→  1494→2vw, 1.5rem) product
+   195→  1495→names
+   196→  1496→
+   197→  1497→===== PAGE 37 =====
+   198→  1498→
+   199→  1499→Mobile / Line
+   200→  1500→Token Use
+   201→  1501→Desktop Height
+   202→  1502→clamp(1.125rem, Card titles,
+   203→  1503→text.h4 1.4
+   204→  1504→1.5vw, 1.25rem) table headers
+   205→  1505→Lead
+   206→  1506→clamp(1.0625rem, paragraphs,
+   207→  1507→text.body-lg 1.6
+   208→  1508→1vw, 1.125rem) product
+   209→  1509→descriptions
+   210→  1510→Default body
+   211→  1511→text.body 1rem (16px) 1.6
+   212→  1512→text
+   213→  1513→Secondary
+   214→  1514→body,
+   215→  1515→text.body-sm 0.875rem (14px) 1.5
+   216→  1516→captions,
+   217→  1517→table cells
+   218→  1518→Footnotes,
+   219→  1519→text.caption 0.75rem (12px) 1.4 disclaimers,
+   220→  1520→badges
+   221→  1521→Labels,
+   222→  1522→eyebrows —
+   223→  1523→text.overline 0.6875rem (11px) 1.4 uppercase,
+   224→  1524→tracking
+   225→  1525→0.1em
+   226→  1526→Table 5.2 — Aura Living fluid type scale (Fraunces for display/h1/
+   227→  1527→h2, Inter for h3 and below)
+   228→  1528→5.3.2 Font Loading Strategy
+   229→  1529→Fonts are loaded via next/font/google in the root layout. This
+   230→  1530→approach has three critical advantages over traditional CSS
+   231→  1531→@font-face loading: the fonts are self-hosted on the same domain
+   232→  1532→as the application (eliminating the third-party request to
+   233→  1533→fonts.googleapis.com that hurts performance and privacy), the
+   234→  1534→font files are automatically subset to the glyphs used in the build
+   235→  1535→(smaller payloads), and the font CSS is inlined into the HTML
+   236→  1536→response (no render-blocking font CSS request). The variable axes
+   237→  1537→of Fraunces and Inter are preloaded to ensure first paint has the
+   238→  1538→correct typography.
+   239→  1539→// app/layout.tsx — font loading
+   240→  1540→import { Fraunces, Inter } from "next/font/google";
+   241→  1541→const fraunces = Fraunces({
+   242→  1542→subsets: ["latin"],
+   243→  1543→variable: "--font-display",
+   244→  1544→
+   245→  1545→===== PAGE 38 =====
+   246→  1546→
+   247→  1547→display: "swap",
+   248→  1548→weight: ["400", "500", "600", "700"],
+   249→  1549→style: ["normal", "italic"],
+   250→  1550→preload: true,
+   251→  1551→});
+   252→  1552→const inter = Inter({
+   253→  1553→subsets: ["latin"],
+   254→  1554→variable: "--font-body",
+   255→  1555→display: "swap",
+   256→  1556→weight: ["400", "500", "600", "700"],
+   257→  1557→preload: true,
+   258→  1558→});
+   259→  1559→export default function RootLayout({ children }: { children:
+   260→  1560→React.ReactNode }) {
+   261→  1561→return (
+   262→  1562→<html lang="en" className={`${fraunces.variable} $
+   263→  1563→{inter.variable}`}>
+   264→  1564→<body>{children}</body>
+   265→  1565→</html>
+   266→  1566→);
+   267→  1567→}
+   268→  1568→5.4 Spacing System
+   269→  1569→Aura Living uses an 8-pixel base spacing unit, extended with a 4-
+   270→  1570→pixel half-step for fine adjustments (icon padding, tight groups).
+   271→  1571→All spacing in the application — padding, margin, gap, position
+   272→  1572→offsets — is a multiple of 4. This constraint is enforced by the
+   273→  1573→Tailwind config: only the values in the spacing scale are available
+   274→  1574→as utilities, and arbitrary values via square-bracket syntax are
+   275→  1575→disabled by an ESLint rule. The result is that every component sits
+   276→  1576→on the same invisible grid, and the eye perceives a calm rhythm
+   277→  1577→across the entire site.
+   278→  1578→
+   279→  1579→===== PAGE 39 =====
+   280→  1580→
+   281→  1581→For responsive spacing, the system uses fluid clamp() values at
+   282→  1582→the section level. Section padding (the space between major page
+   283→  1583→sections) is clamp(3rem, 8vw, 6rem) on mobile to desktop, scaling
+   284→  1584→smoothly rather than stepping at breakpoints. Component-level
+   285→  1585→spacing stays fixed: a button's internal padding does not change
+   286→  1586→between mobile and desktop, only its container's spacing does.
+   287→  1587→This distinction prevents the visual chaos of components resizing
+   288→  1588→inconsistently across breakpoints.
+   289→  1589→Token Value Use
+   290→  1590→No spacing (used
+   291→  1591→space.0 0
+   292→  1592→for resets)
+   293→  1593→Hairline borders,
+   294→  1594→space.px 1px
+   295→  1595→focus rings
+   296→  1596→Micro adjustments
+   297→  1597→space.0.5 2px
+   298→  1598→(icon-to-text gap)
+   299→  1599→Tight internal
+   300→  1600→space.1 4px padding (badges,
+   301→  1601→chips)
+   302→  1602→Default icon
+   303→  1603→space.2 8px padding, small
+   304→  1604→component gaps
+   305→  1605→Button internal
+   306→  1606→space.3 12px padding, list item
+   307→  1607→gaps
+   308→  1608→Card padding,
+   309→  1609→space.4 16px default component
+   310→  1610→gaps
+   311→  1611→Form field gaps,
+   312→  1612→space.6 24px
+   313→  1613→card-to-card gaps
+   314→  1614→Subsection gaps
+   315→  1615→space.8 32px
+   316→  1616→within a section
+   317→  1617→Section heading to
+   318→  1618→space.12 48px
+   319→  1619→body gap
+   320→  1620→Section-to-section
+   321→  1621→space.16 64px
+   322→  1622→gap (mobile)
+   323→  1623→Section-to-section
+   324→  1624→space.24 96px
+   325→  1625→gap (desktop)
+   326→  1626→Fluid section
+   327→  1627→clamp(3rem, 8vw,
+   328→  1628→space.section padding (page-
+   329→  1629→6rem)
+   330→  1630→level)
+   331→  1631→Table 5.3 — Aura Living spacing scale
+   332→  1632→5.5 Layout & Grid System
+   333→  1633→
+   334→  1634→===== PAGE 40 =====
+   335→  1635→
+   336→  1636→Aura Living uses a 12-column grid on desktop, collapsing to a
+   337→  1637→single column on mobile. The grid is implemented via Tailwind's
+   338→  1638→grid utilities (grid-cols-12, col-span-X) and is constrained by a
+   339→  1639→maximum content width of 1440px (90rem), with a minimum
+   340→  1640→content width of 320px (the smallest phone Aura Living officially
+   341→  1641→supports). The horizontal padding on either side of the grid is
+   342→  1642→fluid: clamp(1rem, 5vw, 4rem), giving comfortable reading on
+   343→  1643→small phones and generous air on large monitors. The grid is not
+   344→  1644→used for every layout; for editorial pages (lookbook, journal) the
+   345→  1645→layout breaks the grid intentionally for visual rhythm, but always
+   346→  1646→returns to it for product listings and structured content.
+   347→  1647→Three container classes are defined as Tailwind
+   348→  1648→components: .container-page (max-width 1440px, fluid padding,
+   349→  1649→centered — for most pages), .container-narrow (max-width 768px,
+   350→  1650→fluid padding — for article reading and checkout), and .container-
+   351→  1651→wide (max-width 1680px, fluid padding — for full-bleed editorial).
+   352→  1652→Every page uses one of these containers as its outermost wrapper,
+   353→  1653→ensuring consistent horizontal rhythm across the site.
+   354→  1654→5.6 Border Radius & Elevation
+   355→  1655→Border radius in Aura Living is restrained. The system uses four
+   356→  1656→radii: sharp (0px, for images and dividers), small (4px, for inputs
+   357→  1657→and small buttons), medium (8px, for cards and large buttons),
+   358→  1658→and pill (999px, for badges, chips, and the WhatsApp FAB). The
+   359→  1659→restrained radius scale is a deliberate departure from the soft,
+   360→  1660→rounded look of generic e-commerce sites; it gives Aura Living a
+   361→  1661→more architectural, less playful feel that matches the premium
+   362→  1662→positioning.
+   363→  1663→Elevation is similarly restrained. Aura Living uses only four
+   364→  1664→shadows: none (default for most surfaces), sm (a 1px subtle
+   365→  1665→shadow for cards in their resting state), md (a 4px shadow for
+   366→  1666→cards on hover and dropdowns), and lg (an 8px shadow for the
+   367→  1667→cart drawer, modals, and the mobile menu). Shadows are warm-
+   368→  1668→tinted (using rgba(10, 10, 10, 0.08) rather than pure black) to feel
+   369→  1669→softer and more cohesive with the warm palette. Borders are
+   370→  1670→preferred over shadows for visual separation in most cases, giving
+   371→  1671→the design a flatter, more editorial feel.
+   372→  1672→5.7 Iconography
+   373→  1673→All icons in Aura Living come from lucide-react, a tree-shakeable
+   374→  1674→icon library with a consistent 2px stroke weight, 24x24 viewBox,
+   375→  1675→and MIT licence. Icons are never recoloured to non-palette
+   376→  1676→colours, never resized outside the type scale, and always have
+   377→  1677→accessible names when used alone (via aria-label) or are hidden
+   378→  1678→from assistive tech when used alongside visible text (via aria-
+   379→  1679→hidden). The icon set used across the site is intentionally small
+   380→  1680→(around 25 icons) to maintain visual consistency.
+   381→  1681→
+   382→  1682→===== PAGE 41 =====
+   383→  1683→
+   384→  1684→Custom icons — the Aura Living logo mark, the category icons for
+   385→  1685→lamps/plants/candles, and a handful of decorative editorial marks
+   386→  1686→— are hand-drawn SVGs, exported as React components in
+   387→  1687→components/icons/. These use the same 2px stroke weight as
+   388→  1688→Lucide for consistency. The Aura Living logo mark is a stylised
+   389→  1689→overlapping L, P, and C (lamp, plant, candle) inside a circle,
+   390→  1690→designed to read as both a single elegant mark and a subtle
+   391→  1691→reference to the three product categories.
+   392→  1692→5.8 Imagery Art Direction
+   393→  1693→Imagery is the single most important visual element of a premium
+   394→  1694→home-decor brand. Aura Living's imagery guidelines specify a
+   395→  1695→consistent art direction: warm natural light (2700K to 3500K
+   396→  1696→colour temperature, never cool blue), shallow depth of field, real
+   397→  1697→Pakistani homes and contexts (not stock-photo western interiors),
+   398→  1698→and a muted earth-toned palette that complements the gold and
+   399→  1699→black brand. Product photography is shot on warm cream or soft
+   400→  1700→black backgrounds; lifestyle photography places products in real
+   401→  1701→homes with visible textures (linen, brass, terracotta, wood). All
+   402→  1702→images are served as AVIF with WebP fallback via next/image,
+   403→  1703→with explicit width and height attributes to prevent layout shift.
+   404→  1704→The homepage hero uses a single full-bleed editorial image or a
+   405→  1705→slow Ken-Burns-style video, never a carousel. Carousel hero
+   406→  1706→sections are explicitly forbidden: they introduce interaction cost,
+   407→  1707→hide content from users who do not interact, and dilute the visual
+   408→  1708→focus. The homepage hero is refreshed seasonally (four times per
+   409→  1709→year) to signal freshness without frequent disruption.
+   410→  1710→6. Animation & Motion Strategy
+   411→  1711→Motion in Aura Living is not decoration; it is communication.
+   412→  1712→Every animation has a purpose: to draw attention, to provide
+   413→  1713→feedback, to guide the eye, to smooth a transition, or to delight.
+   414→  1714→Animations without a purpose are removed. This discipline is
+   415→  1715→critical because animations have a cost — they consume main-
+   416→  1716→thread time, they can cause layout shift, and they can make a site
+   417→  1717→feel sluggish if mistimed. The Aura Living motion system is
+   418→  1718→engineered to feel expensive (long, smooth, choreographed) on
+   419→  1719→capable devices and to feel instant on low-powered devices, with
+   420→  1720→no middle ground that feels neither polished nor fast.
+   421→  1721→Three libraries work together, each with a clearly delineated role.
+   422→  1722→GSAP handles scroll-triggered animations (parallax, pinned
+   423→  1723→sections, scrub-linked reveals), long-running timeline-based
+   424→  1724→sequences (the homepage hero entrance, the product page gallery
+   425→  1725→transitions), and any animation that requires precise timing
+   426→  1726→control across multiple elements. Framer Motion (Motion) handles
+   427→  1727→component-level animations (enter/exit transitions, layout
+   428→  1728→animations, gesture-based interactions like drag and hover, and
+   429→  1729→AnimatePresence-driven mount/unmount). Lenis provides smooth
+   430→  1730→scrolling on desktop and (selectively) on mobile, integrating with
+   431→  1731→
+   432→  1732→===== PAGE 42 =====
+   433→  1733→
+   434→  1734→GSAP's ScrollTrigger via a one-time raf wiring. There is deliberate
+   435→  1735→overlap between what GSAP and Framer Motion can do; the rule
+   436→  1736→is that GSAP owns anything scroll- or timeline-driven, and Framer
+   437→  1737→Motion owns anything component- or gesture-driven.
+   438→  1738→6.1 Motion Design Philosophy
+   439→  1739→Aura Living motion follows four principles. First, slow is luxurious:
+   440→  1740→Aura Living animations are slower than typical web animations
+   441→  1741→(entrance animations are 800ms to 1200ms, not 300ms to 500ms)
+   442→  1742→because slow motion signals confidence and craft. Second,
+   443→  1743→choreography over chaos: when multiple elements animate
+   444→  1744→together, they animate in sequence with small staggers (50ms to
+   445→  1745→120ms apart), never simultaneously, which creates a sense of
+   446→  1746→choreography. Third, ease over line: every animation uses a
+   447→  1747→custom cubic-bezier ease (a slow-in, slow-out curve with a slight
+   448→  1748→overshoot for organic motion) rather than linear or default ease
+   449→  1749→curves. Fourth, respect the user: every animation respects the
+   450→  1750→prefers-reduced-motion media query, falling back to instant state
+   451→  1751→changes for users who have requested reduced motion.
+   452→  1752→CUSTOM EASE CURVE
+   453→  1753→Aura Living's signature ease: cubic-bezier(0.22, 1, 0.36, 1). This
+   454→  1754→is a refined ease-out with no overshoot, derived from the
+   455→  1755→standard 'easeOutQuint' curve. It feels slower and more
+   456→  1756→deliberate than the default ease-out, which gives Aura Living
+   457→  1757→motion its luxurious quality.
+   458→  1758→6.2 GSAP Usage Patterns
+   459→  1759→GSAP is used via the @gsap/react package's useGSAP hook, which
+   460→  1760→is the SSR-safe drop-in for useLayoutEffect and includes
+   461→  1761→automatic cleanup via gsap.context(). Every GSAP animation in
+   462→  1762→Aura Living lives inside a useGSAP hook, and the hook's scope is
+   463→  1763→restricted to a ref to prevent selector collisions across
+   464→  1764→components.
+   465→  1765→// components/parallax.tsx — reusable parallax wrapper
+   466→  1766→"use client";
+   467→  1767→import { useRef } from "react";
+   468→  1768→import { useGSAP } from "@gsap/react";
+   469→  1769→import { gsap } from "gsap";
+   470→  1770→import { ScrollTrigger } from "gsap/ScrollTrigger";
+   471→  1771→
+   472→  1772→===== PAGE 43 =====
+   473→  1773→
+   474→  1774→gsap.registerPlugin(ScrollTrigger, useGSAP);
+   475→  1775→type Props = {
+   476→  1776→children: React.ReactNode;
+   477→  1777→speed?: number; // negative = slower (background), positive =
+   478→  1778→faster (foreground)
+   479→  1779→className?: string;
+   480→  1780→};
+   481→  1781→export function Parallax({ children, speed = -50, className }:
+   482→  1782→Props) {
+   483→  1783→const ref = useRef<HTMLDivElement>(null);
+   484→  1784→useGSAP(() => {
+   485→  1785→if (window.matchMedia("(prefers-reduced-motion:
+   486→  1786→reduce)").matches) return;
+   487→  1787→gsap.to(ref.current, {
+   488→  1788→y: speed,
+   489→  1789→ease: "none",
+   490→  1790→scrollTrigger: {
+   491→  1791→trigger: ref.current,
+   492→  1792→start: "top bottom",
+   493→  1793→end: "bottom top",
+   494→  1794→scrub: 1,
+   495→  1795→},
+   496→  1796→});
+   497→  1797→}, { scope: ref });
+   498→  1798→return <div ref={ref} className={className}>{children}</
+   499→  1799→div>;
+   500→  1800→}
+   501→  1801→Three GSAP patterns dominate the Aura Living codebase. The first
+   502→  1802→is the parallax wrapper shown above, used for hero images,
+   503→  1803→editorial banners, and the lookbook. The second is the scroll-
+   504→  1804→
+   505→  1805→===== PAGE 44 =====
+   506→  1806→
+   507→  1807→triggered reveal, where elements animate from opacity 0 with a
+   508→  1808→small y-offset to opacity 1 with no offset as they enter the
+   509→  1809→viewport, with a stagger across sibling elements. The third is the
+   510→  1810→pinned section, used sparingly on the homepage for the featured-
+   511→  1811→collection section where the product grid pins and the background
+   512→  1812→image scrolls behind it.
+   513→  1813→6.3 Framer Motion Usage Patterns
+   514→  1814→Framer Motion (imported as motion) handles all component-level
+   515→  1815→animation. The most common pattern is the entrance animation
+   516→  1816→via the initial, whileInView, and viewport props, which animate an
+   517→  1817→element into view on scroll. Unlike GSAP's ScrollTrigger, Framer
+   518→  1818→Motion's whileInView is simpler and integrates naturally with
+   519→  1819→React's component lifecycle, making it the right tool for revealing
+   520→  1820→cards, sections, and marketing copy. For cart drawer, mobile
+   521→  1821→menu, and modals, AnimatePresence handles enter/exit
+   522→  1822→animations on mount/unmount.
+   523→  1823→// components/reveal.tsx — reusable scroll reveal
+   524→  1824→"use client";
+   525→  1825→import { motion } from "motion/react";
+   526→  1826→import { useReducedMotion } from "@/hooks/use-reduced-
+   527→  1827→motion";
+   528→  1828→const EASE = [0.22, 1, 0.36, 1] as const;
+   529→  1829→type Props = {
+   530→  1830→children: React.ReactNode;
+   531→  1831→delay?: number;
+   532→  1832→y?: number;
+   533→  1833→className?: string;
+   534→  1834→};
+   535→  1835→export function Reveal({ children, delay = 0, y = 24,
+   536→  1836→className }: Props) {
+   537→  1837→const reduce = useReducedMotion();
+   538→  1838→if (reduce) return <div className={className}>{children}</
+   539→  1839→div>;
+   540→  1840→return (
+   541→  1841→
+   542→  1842→===== PAGE 45 =====
+   543→  1843→
+   544→  1844→<motion.div
+   545→  1845→className={className}
+   546→  1846→initial={{ opacity: 0, y }}
+   547→  1847→whileInView={{ opacity: 1, y: 0 }}
+   548→  1848→viewport={{ once: true, margin: "-80px" }}
+   549→  1849→transition={{ duration: 0.8, ease: EASE, delay }}
+   550→  1850→>
+   551→  1851→{children}
+   552→  1852→</motion.div>
+   553→  1853→);
+   554→  1854→}
+   555→  1855→A second Framer Motion pattern is the magnetic button, where
+   556→  1856→buttons and key interactive elements drift slightly toward the
+   557→  1857→cursor on hover, giving a tactile, premium feel. This pattern uses
+   558→  1858→the useMotionValue and useSpring hooks for performant, GPU-
+   559→  1859→accelerated motion. It is used sparingly — only on the primary
+   560→  1860→call-to-action buttons (Add to Cart, Checkout, Subscribe) — to
+   561→  1861→avoid diluting its effect.
+   562→  1862→6.4 Lenis Smooth Scroll Integration
+   563→  1863→Lenis provides smooth scrolling by intercepting the native scroll,
+   564→  1864→applying a lerp-based smoothing, and dispatching a transformed
+   565→  1865→scroll event. On desktop, this gives the entire site a buttery,
+   566→  1866→premium feel. On mobile, the situation is more nuanced: native
+   567→  1867→mobile scroll is already smooth and performant, and overlaying
+   568→  1868→Lenis can introduce input lag and break native interactions like
+   569→  1869→pull-to-refresh. Aura Living therefore uses Lenis on desktop only,
+   570→  1870→and uses the syncTouch option only on devices that report a fine
+   571→  1871→pointer (i.e., touchscreens with a stylus, like iPad Pro), where the
+   572→  1872→smoothness benefit outweighs the cost.
+   573→  1873→// components/smooth-scroll-provider.tsx
+   574→  1874→"use client";
+   575→  1875→import { useEffect } from "react";
+   576→  1876→import Lenis from "lenis";
+   577→  1877→
+   578→  1878→===== PAGE 46 =====
+   579→  1879→
+   580→  1880→import { gsap } from "gsap";
+   581→  1881→import { ScrollTrigger } from "gsap/ScrollTrigger";
+   582→  1882→export function SmoothScrollProvider({ children }: { children:
+   583→  1883→React.ReactNode }) {
+   584→  1884→useEffect(() => {
+   585→  1885→// Skip on mobile / coarse pointer / reduced motion
+   586→  1886→const isMobile = window.matchMedia("(pointer:
+   587→  1887→coarse)").matches;
+   588→  1888→const reduce = window.matchMedia("(prefers-reduced-motion:
+   589→  1889→reduce)").matches;
+   590→  1890→if (isMobile || reduce) return;
+   591→  1891→const lenis = new Lenis({
+   592→  1892→duration: 1.2,
+   593→  1893→easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+   594→  1894→smoothWheel: true,
+   595→  1895→// syncTouch: false on mobile-first build; enable only for fine
+   596→  1896→pointer
+   597→  1897→});
+   598→  1898→lenis.on("scroll", ScrollTrigger.update);
+   599→  1899→const raf = (time: number) => {
+   600→  1900→lenis.raf(time * 1000);
+   601→  1901→};
+   602→  1902→gsap.ticker.add(raf);
+   603→  1903→gsap.ticker.lagSmoothing(0);
+   604→  1904→return () => {
+   605→  1905→gsap.ticker.remove(raf);
+   606→  1906→lenis.destroy();
+   607→  1907→};
+   608→  1908→}, []);
+   609→  1909→
+   610→  1910→===== PAGE 47 =====
+   611→  1911→
+   612→  1912→return <>{children}</>;
+   613→  1913→}
+   614→  1914→6.5 Parallax Implementation
+   615→  1915→Parallax is the signature motion effect of Aura Living, used on the
+   616→  1916→homepage hero, on editorial banners throughout the site, on the
+   617→  1917→lookbook detail pages, and on the product page's lifestyle imagery.
+   618→  1918→The implementation is GPU-accelerated (transform-only, never
+   619→  1919→layout properties like top or left), passive (no scroll event
+   620→  1920→listeners, only ScrollTrigger's raf-driven updates), and reduced-
+   621→  1921→motion-aware (instant fallback). The parallax speed is calibrated
+   622→  1922→per device: stronger on desktop (where the effect reads as
+   623→  1923→luxurious) and subtler on mobile (where strong parallax causes
+   624→  1924→motion sickness and feels gimmicky).
+   625→  1925→Three parallax patterns are used. The first is single-layer parallax,
+   626→  1926→where a background image moves slower than the foreground
+   627→  1927→content (speed -30 to -50 on desktop, -15 to -25 on mobile). The
+   628→  1928→second is multi-layer parallax, where two or three layers move at
+   629→  1929→different speeds to create depth (used on the homepage hero: a
+   630→  1930→background image at -50, a mid-ground product image at -25, and
+   631→  1931→a foreground text overlay at 0). The third is scroll-linked rotation,
+   632→  1932→where an element rotates subtly based on scroll progress (used on
+   633→  1933→the Aura Living logo mark in the homepage hero, which rotates 5
+   634→  1934→degrees as the user scrolls past).
+   635→  1935→6.6 Reduced Motion Accessibility
+   636→  1936→Every animation in Aura Living respects the prefers-reduced-
+   637→  1937→motion media query. Users who have enabled this preference in
+   638→  1938→their operating system see instant state changes with no motion.
+   639→  1939→This is not optional; it is a WCAG 2.2 AA requirement and a basic
+   640→  1940→respect for users who experience motion sensitivity, vestibular
+   641→  1941→disorders, or simply prefer a calmer interface. The
+   642→  1942→useReducedMotion hook (built on top of Framer Motion's hook of
+   643→  1943→the same name) is the single point of truth for this check, and
+   644→  1944→every animation component consults it before applying motion.
+   645→  1945→The reduced-motion fallback is not just disabling animation; it is
+   646→  1946→designing the static end state to look intentional. A reveal
+   647→  1947→animation that fades from opacity 0 to opacity 1 must, in reduced-
+   648→  1948→motion mode, render at opacity 1 immediately — but the layout
+   649→  1949→and spacing should still feel composed. A parallax that translates
+   650→  1950→an element must, in reduced-motion mode, render the element in
+   651→  1951→its final position. The discipline of designing the static end state
+   652→  1952→well makes the reduced-motion experience equal in quality to the
+   653→  1953→animated experience, not a degraded version of it.
+   654→  1954→
+   655→  1955→===== PAGE 48 =====
+   656→  1956→
+   657→  1957→6.7 Performance Budgets for Animation
+   658→  1958→Animation performance is governed by two budgets: a frame
+   659→  1959→budget and a JavaScript budget. The frame budget is 16
+   660→  1960→milliseconds per frame on a 60Hz display (8ms on 120Hz
+   661→  1961→displays); any animation that exceeds this budget causes visible
+   662→  1962→jank. Aura Living animations only animate GPU-accelerated
+   663→  1963→properties (transform, opacity, filter) and never animate layout
+   664→  1964→properties (width, height, top, left, margin, padding). Will-change
+   665→  1965→is used sparingly (on elements that will animate, set just before
+   666→  1966→the animation starts and removed just after) to hint the browser to
+   667→  1967→promote the element to its own compositor layer.
+   668→  1968→The JavaScript budget for animation libraries is 80KB gzipped
+   669→  1969→total: GSAP core plus ScrollTrigger plus @gsap/react plus Motion
+   670→  1970→plus Lenis. This budget is enforced by a bundlesize check in CI; if
+   671→  1971→a PR introduces an animation library that pushes the total over
+   672→  1972→80KB, the build fails. The current budget allocation is
+   673→  1973→approximately: GSAP core 30KB, ScrollTrigger 12KB, @gsap/react
+   674→  1974→2KB, Motion 30KB, Lenis 6KB — totaling 80KB. There is no
+   675→  1975→headroom; introducing any additional animation library requires
+   676→  1976→removing an existing one.
+   677→  1977→ANTI-PATTERNS FORBIDDEN
+   678→  1978→The following animation patterns are explicitly forbidden in
+   679→  1979→Aura Living: (1) Animating layout properties (width, height, top,
+   680→  1980→left). (2) Using setTimeout or setInterval for animation. (3)
+   681→  1981→Scroll event listeners without rAF throttling. (4) Parallax on
+   682→  1982→touch devices without syncTouch testing. (5) Auto-playing video
+   683→  1983→with sound. (6) Animations longer than 1500ms. (7) More than
+   684→  1984→three simultaneous animations on screen at once. (8) Loading
+   685→  1985→spinners that animate for less than 300ms (instant feedback
+   686→  1986→preferred).
+   687→  1987→7. Page-by-Page Blueprint
+   688→  1988→This chapter is the heart of the document. Every frontend route in
+   689→  1989→Aura Living is specified here in enough detail that a developer can
+   690→  1990→implement it without further design input. For each page, the
+   691→  1991→specification includes: the route and its purpose, the layout and
+   692→  1992→key sections above the fold and below, the components used, the
+   693→  1993→animations applied, the SEO metadata, the data dependencies
+   694→  1994→(with a note on whether they are static, ISR, or dynamic), the
+   695→  1995→performance budget, and any page-specific UX considerations.
+   696→  1996→Pages are ordered by their importance to the customer journey,
+   697→  1997→not alphabetically.
+   698→  1998→7.1 Home Page (/)
+   699→  1999→
+   700→  2000→===== PAGE 49 =====
+   701→  2001→
+   702→  2002→The homepage is the single most important page in Aura Living. It
+   703→  2003→must communicate the brand promise in under five seconds,
+   704→  2004→surface the three product categories within one scroll, and
+   705→  2005→provide clear paths to shop, learn, and contact. The homepage is
+   706→  2006→the only page where the design takes liberty with the standard
+   707→  2007→grid; subsequent pages return to the disciplined grid system.
+   708→  2008→7.1.1 Above the Fold
+   709→  2009→The hero section is full-viewport-height (100svh on mobile, 100vh
+   710→  2010→on desktop) with a full-bleed editorial image of a warmly lit
+   711→  2011→interior featuring a lamp, a plant, and a candle. The image has a
+   712→  2012→subtle multi-layer parallax (background -50, midground -25,
+   713→  2013→foreground text 0) on scroll. The headline, set in Fraunces display
+   714→  2014→weight, reads "Light, life, and living beauty." and animates in with
+   715→  2015→a character-stagger reveal (each word fades up with a 80ms
+   716→  2016→stagger). A secondary line in Inter reads "Premium lamps, plants,
+   717→  2017→and candles — curated for the Pakistani home." Two call-to-action
+   718→  2018→buttons sit below: a primary gold-filled "Shop the Collection"
+   719→  2019→button (magnetic hover effect) and a secondary outline "Explore
+   720→  2020→Lookbook" button. The page header is transparent at the top of
+   721→  2021→the page and transitions to a solid dark background with a subtle
+   722→  2022→shadow after 100 pixels of scroll.
+   723→  2023→7.1.2 Below the Fold Sections
+   724→  2024→The homepage contains six sections below the fold, each designed
+   725→  2025→to be a complete visual unit that fits on a single mobile screen.
+   726→  2026→First, the category tiles: three full-width stacked images on mobile
+   727→  2027→(or three-column on desktop), each showing a representative
+   728→  2028→product from lamps, plants, and candles, with a hover effect that
+   729→  2029→zooms the image slightly and reveals the category name. Second,
+   730→  2030→the featured collection: a pinned section where a curated
+   731→  2031→collection's image stays fixed while product cards scroll past it
+   732→  2032→(desktop only; mobile uses a horizontal swipe carousel). Third, the
+   733→  2033→bestsellers grid: a four-column desktop / two-column mobile grid
+   734→  2034→of the top eight products, with reveal-on-scroll stagger and a
+   735→  2035→quick-add-to-cart button on hover.
+   736→  2036→Fourth, the editorial banner: a full-bleed image with overlay text
+   737→  2037→introducing the current season's story (e.g., "The Monsoon Edit"),
+   738→  2038→linking to the relevant collection. Fifth, the testimonials: a
+   739→  2039→horizontal-scrolling strip of customer reviews with star ratings,
+   740→  2040→names, and cities ("Ayesha from Karachi"), with a subtle infinite
+   741→  2041→marquee on desktop and swipe-on-mobile. Sixth, the newsletter
+   742→  2042→signup: a centered form with a single email input and a gold
+   743→  2043→subscribe button, with copy framing it as joining the Aura Living
+   744→  2044→community rather than a generic "subscribe for updates."
+   745→  2045→7.1.3 Animation and Performance
+   746→  2046→
+   747→  2047→===== PAGE 50 =====
+   748→  2048→
+   749→  2049→The homepage hero animation runs once on mount (not on scroll)
+   750→  2050→and takes 1200ms total. All below-the-fold sections use scroll-
+   751→  2051→triggered reveals with 80ms staggers. The featured collection's
+   752→  2052→pinned section is the most expensive animation on the page and is
+   753→  2053→gated behind a 1024px min-width check (disabled on mobile,
+   754→  2054→where it falls back to a static carousel). The homepage targets
+   755→  2055→LCP under 2.0 seconds on 4G, INP under 150ms, and CLS under
+   756→  2056→0.05. The hero image is preloaded with fetchpriority="high".
+   757→  2057→7.2 Shop / Product Listing Page (/shop, /shop/[category])
+   758→  2058→The product listing page (PLP) is where customers browse the
+   759→  2059→catalogue. It must balance two competing demands: showing as
+   760→  2060→many products as possible per screen (high information density)
+   761→  2061→and giving each product enough space to feel premium (low
+   762→  2062→information density). Aura Living resolves this with a four-column
+   763→  2063→desktop grid (16px gap) collapsing to two columns on mobile (8px
+   764→  2064→gap), with each card showing the product image, name, price, and
+   765→  2065→a quick-add-to-cart button that appears on hover (desktop) or
+   766→  2066→always visible (mobile).
+   767→  2067→7.2.1 Filter and Sort Bar
+   768→  2068→A sticky filter bar sits below the header on desktop (and inside a
+   769→  2069→slide-up sheet on mobile), with filter chips for category, price
+   770→  2070→range, material, and availability, plus a sort dropdown (featured,
+   771→  2071→price low-to-high, price high-to-low, newest, best-selling). Filters
+   772→  2072→update the product grid via URL search parameters (not client
+   773→  2073→state), so filtered views are shareable and SEO-crawlable. The
+   774→  2074→filter bar uses a sticky position with a subtle backdrop blur effect
+   775→  2075→to maintain visual hierarchy as the user scrolls.
+   776→  2076→7.2.2 Product Card Specification
+   777→  2077→The product card is the most reused component in Aura Living. Its
+   778→  2078→specification is therefore critical. The card has a fixed aspect-ratio
+   779→  2079→image (4:5 portrait, the standard for fashion and decor
+   780→  2080→photography), the product name in Fraunces h4, the price in Inter
+   781→  2081→with the PKR currency formatted via Intl.NumberFormat('ur-PK'),
+   782→  2082→and a quick-add button that appears as a gold-filled bar at the
+   783→  2083→bottom of the card on hover (desktop) or as a small persistent
+   784→  2084→button (mobile). Out-of-stock products show a muted "Sold Out"
+   785→  2085→overlay and disable the add button. The card has a subtle border
+   786→  2086→that becomes the brand gold on hover, and the image scales to
+   787→  2087→1.05x with a 400ms ease.
+   788→  2088→7.2.3 Empty and Loading States
+   789→  2089→When filters return no products, the page shows a centered empty
+   790→  2090→state with a soft illustration (an empty shelf icon), the heading "No
+   791→  2091→products match your filters," and a button to clear all filters. When
+   792→  2092→the page is loading (initial load or filter change), a skeleton grid of
+   793→  2093→
+   794→  2094→===== PAGE 51 =====
+   795→  2095→
+   796→  2096→8 to 12 cards with pulse-animated placeholders is shown. The
+   797→  2097→skeleton has the exact dimensions of the real card to prevent
+   798→  2098→layout shift.
+   799→  2099→7.3 Product Detail Page (/product/[slug])
+   800→  2100→The product detail page (PDP) is where the customer makes the
+   801→
+   802→[showing lines 1301-2100 of 5887; use offset=2101 with limit to continue reading]
